@@ -22,4 +22,58 @@ let fs = require("fs");
 // Init the Spotify API client is using ID and Secret
 let spotify = new Spotify(keys.spotify);
 
+// ****** WRITE TO LOG.TXT FILES FOR BONUS - DO THIS LAST
+
+// Setting Up basic functions for searching
+// =========================================
+
+// SPOTIFY - Search
+// =========================================
+
+// This getArtistName() does just that!
+let getArtistName = (artist) => {
+    return artist.name;
+};
+
+// This spotifySearch() runs a search by songTitle
+let spotifySearch = (songTitle) => {
+    if (songTitle === undefined) {
+        songTitle = "Hangar 18";
+    };
+    spotify.search({ type: "track", query: songTitle}, (err, data) => {
+        if(err) {
+            console.log("Error has occured: " + err);
+            return;
+        }
+    });
+};
+
+// Function for determining which command is executed
+var pick = function (useCaseData, functionsData) {
+    switch (useCaseData) {
+        case "my-tweets":
+            getMyTweets();
+            break;
+        case "spotify-this-song":
+            getMeSpotify(functionsData);
+            break;
+        case "movie-this":
+            getMeMovie(functionsData);
+            break;
+        case "do-what-it-says":
+            doWhatItSays();
+            break;
+        default:
+            console.log("LIRI doesn't know that");
+    }
+};
+
+// Function which takes in command line arguments and executes correct function accordingly
+var runThis = function (argOne, argTwo) {
+    pick(argOne, argTwo);
+};
+
+// MAIN PROCESS
+// =====================================
+runThis(process.argv[2], process.argv[3]);
 

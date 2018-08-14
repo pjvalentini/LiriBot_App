@@ -52,7 +52,7 @@ let spotifySearch = (songTitle) => {
     if (songTitle === undefined) {
         songTitle = "Hangar 18";
     };
-    spotify.search({ type: "track", query: songTitle}, (err, data) => {
+    spotify.search({ type: "track", query: songTitle }, (err, data) => {
         if(err) {
             console.log("Error has occured: " + err);
             return;
@@ -65,7 +65,7 @@ let spotifySearch = (songTitle) => {
             data.push({
                 "artist(s)": songs[i].artists.map(getArtistName),
                 "song name: ": songs[i].name,
-                "preview song: ": songs[i].album.name,
+                "preview song: ": songs[i].preview_url,
                 "album: ": songs[i].album.name
             });
         };

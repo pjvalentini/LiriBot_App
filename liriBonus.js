@@ -49,13 +49,13 @@ let spotifySearch = (songTitle) => {
 };
 
 // Function for determining which command is executed
-var pick = function (useCaseData, functionsData) {
+var searchChoices = (useCaseData, functionsData) => {
     switch (useCaseData) {
         case "my-tweets":
             getMyTweets();
             break;
         case "spotify-this-song":
-            getMeSpotify(functionsData);
+            spotifySearch(functionsData);
             break;
         case "movie-this":
             getMeMovie(functionsData);
@@ -69,8 +69,8 @@ var pick = function (useCaseData, functionsData) {
 };
 
 // Function which takes in command line arguments and executes correct function accordingly
-var runThis = function (argOne, argTwo) {
-    pick(argOne, argTwo);
+var runThis = (argOne, argTwo) => {
+    searchChoices(argOne, argTwo);
 };
 
 // MAIN PROCESS

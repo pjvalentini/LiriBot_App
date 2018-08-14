@@ -22,9 +22,8 @@ let fs = require("fs");
 // Init the Spotify API client is using ID and Secret
 let spotify = new Spotify(keys.spotify);
 
-// ****** WRITE TO LOG.TXT FILES FOR BONUS - DO THIS LAST 
-// CHECK LINE 60 for writeToLog()!!!!!
 
+// This function logs a queries to log.txt file
 var writeToLog = function (data) {
     // Append the JSON data and add a newline character to the end of the log.txt file
     fs.appendFile("log.txt", JSON.stringify(data) + "\n", function (err) {
@@ -39,7 +38,7 @@ var writeToLog = function (data) {
 // Setting Up basic functions for searching
 // =========================================
 
-// SPOTIFY - Search
+// SPOTIFY - SEARCH
 // =========================================
 
 // This getArtistName() does just that!

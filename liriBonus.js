@@ -25,6 +25,17 @@ let spotify = new Spotify(keys.spotify);
 // ****** WRITE TO LOG.TXT FILES FOR BONUS - DO THIS LAST 
 // CHECK LINE 60 for writeToLog()!!!!!
 
+var writeToLog = function (data) {
+    // Append the JSON data and add a newline character to the end of the log.txt file
+    fs.appendFile("log.txt", JSON.stringify(data) + "\n", function (err) {
+        if (err) {
+            return console.log(err);
+        }
+
+        console.log("log.txt was updated!");
+    });
+};
+
 // Setting Up basic functions for searching
 // =========================================
 
@@ -50,15 +61,16 @@ let spotifySearch = (songTitle) => {
         var songs = data.tracks.items;
         var data = [];
 
-        for (let i = 0; i < songs.length; i++) {
+        for (var i = 0; i < songs.length; i++) {
             data.push({
                 "artist(s)": songs[i].artists.map(getArtistName),
                 "song name: ": songs[i].name,
-                "preview song: ": songs[i].album.name
+                "preview song: ": songs[i].album.name,
+                "album: ": songs[i].album.name
             });
         };
         console.log(data)
-        // writeToLog(data);
+        writeToLog(data);
     });
 };
 

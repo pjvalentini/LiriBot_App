@@ -22,7 +22,8 @@ let fs = require("fs");
 // Init the Spotify API client is using ID and Secret
 let spotify = new Spotify(keys.spotify);
 
-// ****** WRITE TO LOG.TXT FILES FOR BONUS - DO THIS LAST
+// ****** WRITE TO LOG.TXT FILES FOR BONUS - DO THIS LAST 
+// CHECK LINE 60 for writeToLog()!!!!!
 
 // Setting Up basic functions for searching
 // =========================================
@@ -45,6 +46,19 @@ let spotifySearch = (songTitle) => {
             console.log("Error has occured: " + err);
             return;
         }
+
+        var songs = data.tracks.items;
+        var data = [];
+
+        for (let i = 0; i < songs.length; i++) {
+            data.push({
+                "artist(s)": songs[i].artists.map(getArtistName),
+                "song name: ": songs[i].name,
+                "preview song: ": songs[i].album.name
+            });
+        };
+        console.log(data)
+        // writeToLog(data);
     });
 };
 

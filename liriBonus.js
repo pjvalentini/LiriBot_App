@@ -4,14 +4,17 @@
 // Read and set up our env variables
 require("dotenv").config();
 
-// Imports the request NPM package.
-let request = require("request");
-
 // Importing the API keys
 let keys = require("./keys");
 
+// Imports the request NPM package.
+let request = require("request");
+
+// Import the moment npm package.
+var moment = require("moment");
+
 // Import Twitter NPM Package
-let Twitter = require("twitter");
+// let Twitter = require("twitter");
 
 // Imports node-sportify-api NPM Package.
 let Spotify = require("node-spotify-api");
@@ -24,9 +27,9 @@ let spotify = new Spotify(keys.spotify);
 
 
 // This function logs a queries to log.txt file
-var writeToLog = function (data) {
+var writeToLog = (data) => {
     // Append the JSON data and add a newline character to the end of the log.txt file
-    fs.appendFile("log.txt", JSON.stringify(data) + "\n", function (err) {
+    fs.appendFile("log.txt", JSON.stringify(data) + "\n", function(err) {
         if (err) {
             return console.log(err);
         }
@@ -42,12 +45,12 @@ var writeToLog = function (data) {
 // =========================================
 
 // This getArtistName() does just that!
-let getArtistName = (artist) => {
+var getArtistName = (artist) => {
     return artist.name;
 };
 
 // This spotifySearch() runs a search by songTitle
-let spotifySearch = (songTitle) => {
+var getArtistsByName = (songTitle) => {
     if (songTitle === undefined) {
         songTitle = "Hangar 18";
     };
@@ -73,14 +76,54 @@ let spotifySearch = (songTitle) => {
     });
 };
 
+// Function for concert dates search
+var getMyBands = (artist) => {
+    var queryURL = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+
+    request(queryURL, (error, res, body) => {
+        if(!error && res.statusCode === 200) {
+            let jsonData = JSON.parse(body);
+
+            if(!jsonData.length) {
+                console.log("No Results Found for " + artist); 
+                return;
+            }
+
+            let logData = []
+            logData.push("Upcoming shows for " + artist + ":");
+
+            for (var i = 0; i < jsonData.length; i++) {
+                var show = jsonData[i];
+            
+            // Here we can push each line of concert data to logData  
+            // If a concert doesn't have a region, display the country instead
+            // Use moment to format the date properly
+                logData.push(
+                    show.venue.city + 
+                    "," + 
+                    (show.venue.region || show.venue.country) + 
+                    " at " + 
+                    show.venue.name + 
+                    " " + 
+                    moment(show.datetime).format("MM/DD/YY")
+                );
+            }
+              // Print and write the concert data as a string joined by a newline character
+              console.log(logData.join("\n"));
+              writeToLog(logData.join("\n"));
+        };
+    });
+};
+
+
 // Function for determining which command is executed
 var searchChoices = (useCaseData, functionsData) => {
     switch (useCaseData) {
-        case "my-tweets":
-            getMyTweets();
+        case "concert-this":
+            getMyBands(functionsData);
             break;
         case "spotify-this-song":
-            spotifySearch(functionsData);
+            getArtistsByName(functionsData);
             break;
         case "movie-this":
             getMeMovie(functionsData);
@@ -94,11 +137,11 @@ var searchChoices = (useCaseData, functionsData) => {
 };
 
 // Function which takes in command line arguments and executes correct function accordingly
-var runThis = (argOne, argTwo) => {
+let runThis = (argOne, argTwo) => {
     searchChoices(argOne, argTwo);
 };
 
 // MAIN PROCESS
 // =====================================
-runThis(process.argv[2], process.argv[3]);
+runThis(process.argv[2], process.argv.slice(3).join(" "));
 

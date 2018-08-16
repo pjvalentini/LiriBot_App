@@ -71,7 +71,7 @@ var getArtistsByName = (songTitle) => {
                 "album: ": songs[i].album.name
             });
         };
-        console.log(data)
+        console.log(data);
         writeToLog(data);
     });
 };
@@ -115,6 +115,50 @@ var getMyBands = (artist) => {
     });
 };
 
+// Function for running a Movie Search
+var getMeMovie = function (movieName) {
+    if (movieName === undefined) {
+        movieName = "Mr Nobody";
+    }
+
+    var urlHit = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=full&tomatoes=true&apikey=trilogy";
+
+    request(urlHit, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            var jsonData = JSON.parse(body);
+
+            var data = {
+                "Title:": jsonData.Title,
+                "Year:": jsonData.Year,
+                "Rated:": jsonData.Rated,
+                "IMDB Rating:": jsonData.imdbRating,
+                "Country:": jsonData.Country,
+                "Language:": jsonData.Language,
+                "Plot:": jsonData.Plot,
+                "Actors:": jsonData.Actors,
+                "Rotten Tomatoes Rating:": jsonData.Ratings[1].Value
+            };
+
+            console.log(data);
+            writeToLog(data);
+        }
+    });
+};
+
+// Function for running a command based on text file
+var doWhatItSays = function () {
+    fs.readFile("random.txt", "utf8", function (error, data) {
+        console.log(data);
+
+        var dataArr = data.split(",");
+
+        if (dataArr.length === 2) {
+            searchChoices(dataArr[0], dataArr[1]);
+        } else if (dataArr.length === 1) {
+            searchChoices(dataArr[0]);
+        }
+    });
+};
 
 // Function for determining which command is executed
 var searchChoices = (useCaseData, functionsData) => {

@@ -26,7 +26,7 @@ var spotify = new Spotify(keys.spotify);
 // =====================================
 
 // Writes to the log.txt file
-var writeToLog = function (data) {
+var writeToLog =  (data) => {
     // Append the JSON data and add a newline character to the end of the log.txt file
     fs.appendFile("log.txt", JSON.stringify(data) + "\n", function (err) {
         if (err) {
@@ -38,12 +38,12 @@ var writeToLog = function (data) {
 };
 
 // Helper function that gets the artist name
-var getArtistNames = function (artist) {
+var getArtistNames = (artist) => {
     return artist.name;
 };
 
 // Function for running a Spotify search
-var getMeSpotify = function (songName) {
+var getMeSpotify = (songName) => {
     if (songName === undefined) {
         songName = "What's my age again";
     }
@@ -80,7 +80,7 @@ var getMeSpotify = function (songName) {
 };
 
 // Function for concert search
-var getMyBands = function (artist) {
+var getMyBands = (artist) => {
     var queryURL = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
 
     request(queryURL, function (error, response, body) {
@@ -103,13 +103,7 @@ var getMyBands = function (artist) {
                 // If a concert doesn't have a region, display the country instead
                 // Use moment to format the date
                 logData.push(
-                    show.venue.city +
-                    "," +
-                    (show.venue.region || show.venue.country) +
-                    " at " +
-                    show.venue.name +
-                    " " +
-                    moment(show.datetime).format("MM/DD/YYYY")
+                    show.venue.city + "," + (show.venue.region || show.venue.country) + " at " + show.venue.name + " " + moment(show.datetime).format("MM/DD/YYYY")
                 );
             }
 
@@ -121,7 +115,7 @@ var getMyBands = function (artist) {
 };
 
 // Function for running a Movie Search
-var getMeMovie = function (movieName) {
+var getMeMovie = (movieName) => {
     if (movieName === undefined) {
         movieName = "Mr Nobody";
     }
@@ -152,38 +146,41 @@ var getMeMovie = function (movieName) {
             console.log("Plot: " + jsonData.Plot);
             console.log("Actors: " + jsonData.Actors);
             console.log("Rotten Tomatoes Rating: " + jsonData.Ratings[1].Value);
-            // console.log(data);
+            console.log(data);
             writeToLog(data);
         }
     });
 };
 
 // Function for running a command based on text file
-var doWhatItSays = function () {
+var doWhatItSays = () => {
     fs.readFile("random.txt", "utf8", function (error, data) {
+        if (error) {
+            throw error;
+        }
         console.log(data);
 
         var dataArr = data.split(",");
 
         if (dataArr.length === 2) {
-            pick(dataArr[0], dataArr[1]);
+            command(dataArr[0], dataArr[1]);
         } else if (dataArr.length === 1) {
-            pick(dataArr[0]);
+            command(dataArr[0]);
         }
     });
 };
 
 // Function for determining which command is executed
-var pick = function (caseData, functionData) {
-    switch (caseData) {
+var command = (useCaseData, functionsData) => {
+    switch (useCaseData) {
         case "concert-this":
-            getMyBands(functionData);
+            getMyBands(functionsData);
             break;
         case "spotify-this-song":
-            getMeSpotify(functionData);
+            getMeSpotify(functionsData);
             break;
         case "movie-this":
-            getMeMovie(functionData);
+            getMeMovie(functionsData);
             break;
         case "do-what-it-says":
             doWhatItSays();
@@ -194,8 +191,8 @@ var pick = function (caseData, functionData) {
 };
 
 // Function which takes in command line arguments and executes correct function accordingly
-var runThis = function (argOne, argTwo) {
-    pick(argOne, argTwo);
+var runThis = (argOne, argTwo) => {
+    command(argOne, argTwo);
 };
 
 // MAIN PROCESS

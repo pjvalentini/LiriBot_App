@@ -146,7 +146,7 @@ var getMeMovie = (movieName) => {
             console.log("Plot: " + jsonData.Plot);
             console.log("Actors: " + jsonData.Actors);
             console.log("Rotten Tomatoes Rating: " + jsonData.Ratings[1].Value);
-            console.log(data);
+            // console.log(data);
             writeToLog(data);
         }
     });
